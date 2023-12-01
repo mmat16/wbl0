@@ -10,10 +10,6 @@ type DB struct {
 	*gorm.DB
 }
 
-type Model struct {
-	gorm.Model
-	Value []byte `gorm:"type:jsonb"`
-}
 type Order struct {
 	OrderUID          string    `json:"order_uid"          gorm:"unique"`
 	TrackNumber       string    `json:"track_number"       gorm:"primaryKey"`

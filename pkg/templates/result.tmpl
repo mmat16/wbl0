@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang='en'>
+<head>
+  <meta charset="utf-8">
+  <title>Orders</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .details {
+            margin-top: 15px;
+        }
+
+        .item {
+            margin-top: 10px;
+            border-top: 1px solid #ccc;
+            padding-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+  <ul>
+    <li>
+      <div>Order UID: {{ .OrderUID }}</div>
+    </li>
+    <li>
+      <div>Track Number: {{ .TrackNumber }}</div>
+    </li>
+    <li>
+      <div>Entry: {{ .Entry }}</div>
+    </li>
+    <li>
+      <div>Delivery: </div>
+      <ul>
+        <li>
+          <div>Name: {{ .Delivery.Name }}</div>
+        </li>
+        <li>
+          <div>Phone: {{ .Delivery.Phone }}</div>
+        </li>
+        <li>
+          <div>Zip: {{ .Delivery.Zip }}</div>
+        </li>
+        <li>
+          <div>City: {{ .Delivery.City }}</div>
+        </li>
+        <li>
+          <div>Address: {{ .Delivery.Address }}</div>
+        </li>
+        <li>
+          <div>Region: {{ .Delivery.Region }}</div>
+        </li>
+        <li>
+          <div>Email: {{ .Delivery.Email }}</div>
+        </li>
+      </ul>
+    </li>
+    <li>
+      <div>Payment: </div>
+      <ul>
+        <li>
+          <div>Transaction: {{ .Payment.Transaction }}</div> 
+        </li>
+        <li>
+          <div>Request ID: {{ .Payment.RequestID }}</div> 
+        </li>
+        <li>
+          <div>Currency: {{ .Payment.Currency }}</div> 
+        </li>
+        <li>
+          <div>Provider: {{ .Payment.Provider }}</div> 
+        </li>
+        <li>
+          <div>Amount: {{ .Payment.Amount }}</div> 
+        </li>
+        <li>
+          <div>Payment DT: {{ .Payment.PaymentDt }}</div> 
+        </li>
+        <li>
+          <div>Bank: {{ .Payment.Bank }}</div> 
+        </li>
+        <li>
+          <div>Delivery Cost: {{ .Payment.DeliveryCost }}</div> 
+        </li>
+        <li>
+          <div>Goods Total: {{ .Payment.GoodsTotal }}</div> 
+        </li>
+        <li>
+          <div>Custom Fee: {{ .Payment.CustomFee }}</div> 
+        </li>
+      </ul>
+    </li>
+        {{ range .Items }}
+    <li>
+      <div>Items:</div>
+      <ul>
+        <li>
+          <div>Chrt ID: {{ .ChrtID}}</div>
+        </li>
+        <li>
+          <div>Track Number: {{ .TrackNumber}}</div>
+        </li>
+        <li>
+          <div>Price: {{ .Price}}</div>
+        </li>
+        <li>
+          <div>RID: {{ .RID}}</div>
+        </li>
+        <li>
+          <div>Name: {{ .Name}}</div>
+        </li>
+        <li>
+          <div>Sale: {{ .Sale}}</div>
+        </li>
+        <li>
+          <div>Size: {{ .Size}}</div>
+        </li>
+        <li>
+          <div>Total Price: {{ .TotalPrice}}</div>
+        </li>
+        <li>
+          <div>Nm ID: {{ .NmID}}</div>
+        </li>
+        <li>
+          <div>Brand: {{ .Brand}}</div>
+        </li>
+        <li>
+          <div>Status: {{ .Status}}</div>
+        </li>
+      </ul>
+    </li>
+      {{ end }}
+  </ul>
+</body>
+</html>

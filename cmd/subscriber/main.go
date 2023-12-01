@@ -17,6 +17,10 @@ import (
 	"demoService/pkg/repository"
 )
 
+func Home(ctx *gin.Context) {
+	ctx.HTML(http.StatusOK, "index.tmpl", nil)
+}
+
 func main() {
 	sc, err := stan.Connect("wb", "sub")
 	if err != nil {
@@ -44,6 +48,26 @@ func main() {
 	}()
 
 	r := gin.Default()
+	r.LoadHTMLGlob("./pkg/templates/*")
+
+	r.GET("/", func(ctx *gin.Context) {
+		ctx.HTML(http.StatusOK, "index.tmpl", nil)
+	})
+
+	r.POST("/proccess", func(ctx *gin.Context) {
+		inputText, ok := ctx.GetPostForm("id")
+		if !ok {
+			ctx.HTML(404, "notfound.tmpl", nil)
+			return
+		}
+		order, ok := cacher.Get(inputText)
+		if !ok {
+			ctx.HTML(404, "notfound.tmpl", nil)
+			return
+		}
+		ctx.HTML(200, "result.tmpl", order)
+	})
+
 	r.GET("/get_order", func(ctx *gin.Context) {
 		order, ok := cacher.Get(ctx.Query("order_uid"))
 		if !ok {
@@ -55,10 +79,9 @@ func main() {
 			)
 			return
 		}
-		ctx.IndentedJSON(200, order)
+		ctx.HTML(200, "result.tmpl", order)
 	})
 
-	// r.Run("localhost:8080")
 	server := &http.Server{
 		Addr:    ":8080",
 		Handler: r,
