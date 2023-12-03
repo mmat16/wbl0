@@ -12,12 +12,15 @@ import (
 	"demoService/pkg/repository"
 )
 
+// Receiver instance contains pointers to connected database and cacher
+// and NATS-Streaming connection
 type Receiver struct {
 	db     *repository.DB
 	cacher *cache.Cache
 	sc     stan.Conn
 }
 
+// Creates and returns pointer to new Receiver instance
 func New(db *repository.DB, cacher *cache.Cache, sc stan.Conn) *Receiver {
 	return &Receiver{
 		db:     db,
@@ -26,6 +29,7 @@ func New(db *repository.DB, cacher *cache.Cache, sc stan.Conn) *Receiver {
 	}
 }
 
+// Finds all entries in the database and writes them to the cache
 func (r *Receiver) UpdateCache() {
 	orders := r.db.FindAll()
 	for _, order := range orders {
@@ -33,9 +37,10 @@ func (r *Receiver) UpdateCache() {
 	}
 }
 
+// Subscibes to the NATS-Streaming subject named "order" and waits for new
+// messages. All new messages would be written in database and cache
 func (r *Receiver) Receive() {
 	sub, err := r.sc.QueueSubscribe("order", "", func(msg *stan.Msg) {
-		log.Println("received message!")
 		var order repository.Order
 		err := json.Unmarshal(msg.Data, &order)
 		if err != nil {

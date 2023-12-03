@@ -7,6 +7,10 @@ import (
 	"github.com/nats-io/stan.go"
 )
 
+var incorrectMsg = []byte(`{
+  "ored_id": wke
+  }`)
+
 var msg = []byte(`{
   "order_uid": "b563feb7b2b84b6test",
   "track_number": "WBILMTESTTRACK",
@@ -271,14 +275,14 @@ var msg1 = []byte(`{
 }`)
 
 func main() {
-	msgs := [][]byte{msg, msg1, msg2, msg3, msg4}
+	msgs := [][]byte{msg, msg1, msg2, msg3, msg4, incorrectMsg}
 	sc, err := stan.Connect("wb", "pub")
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer sc.Close()
 
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 6; i++ {
 		err = sc.Publish("order", msgs[i])
 		if err != nil {
 			log.Println(err)

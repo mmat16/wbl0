@@ -6,10 +6,13 @@ import (
 	"gorm.io/gorm"
 )
 
+// Database type contains embedded *gorm.DB
+// needed to extend it with project related methods
 type DB struct {
 	*gorm.DB
 }
 
+// Type to represent json orders
 type Order struct {
 	OrderUID          string    `json:"order_uid"          gorm:"unique"`
 	TrackNumber       string    `json:"track_number"       gorm:"primaryKey"`

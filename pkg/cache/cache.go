@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Creates new cacher instance and returns pointer to it
 func New(defaultExpiry, cleanupInterval time.Duration) *Cache {
 	items := make(map[string]Item)
 
@@ -21,10 +22,11 @@ func New(defaultExpiry, cleanupInterval time.Duration) *Cache {
 	return &cache
 }
 
+// Sets an item into the cacher instance to store
 func (c *Cache) Set(key string, value any, duration time.Duration) {
 	var expiry int64
 
-	if duration == 0 {
+	if duration <= 0 {
 		duration = c.defaultExpiry
 	}
 
@@ -42,6 +44,9 @@ func (c *Cache) Set(key string, value any, duration time.Duration) {
 	}
 }
 
+// Returns item from cacher instance and true if item is present in the cacher
+// and its lifetime is not yet expired.
+// Otherwise returns nil and false
 func (c *Cache) Get(key string) (any, bool) {
 	c.RLock()
 	defer c.RUnlock()
@@ -61,6 +66,8 @@ func (c *Cache) Get(key string) (any, bool) {
 	return item.Value, true
 }
 
+// Deletes item in cacher instance if present
+// Otherwise returns error "item not found in cache"
 func (c *Cache) Delete(key string) error {
 	c.Lock()
 	defer c.Unlock()
@@ -74,10 +81,14 @@ func (c *Cache) Delete(key string) error {
 	return nil
 }
 
+// Starts the garbage collection in the cacher instance
+// in its own goroutine
 func (c *Cache) StartGC() {
 	go c.GC()
 }
 
+// Removes expired items in the cache after each cleanup interval
+// being set at the creation of the cacher instance
 func (c *Cache) GC() {
 	for {
 		<-time.After(c.cleanupInterval)
@@ -93,6 +104,7 @@ func (c *Cache) GC() {
 	}
 }
 
+// Finds and returns keys for the expired items in the cacher instance
 func (c *Cache) expiredKeys() []string {
 	c.RLock()
 	defer c.RUnlock()
@@ -107,6 +119,7 @@ func (c *Cache) expiredKeys() []string {
 	return keys
 }
 
+// Deletes items from the cacher instance by the given slice of keys to them
 func (c *Cache) clearItems(keys []string) {
 	c.Lock()
 	defer c.Unlock()
@@ -116,6 +129,7 @@ func (c *Cache) clearItems(keys []string) {
 	}
 }
 
+// Returns all presented items in cacher instance
 func (c *Cache) GetAllItems() []any {
 	res := make([]any, len(c.items))
 	for _, value := range c.items {
