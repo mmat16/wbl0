@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
-	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -40,19 +39,14 @@ func main() {
 	reciever := reciever.New(db, cacher, sc)
 	reciever.UpdateCache()
 
-	var wg sync.WaitGroup
-	wg.Add(1)
 	go func() {
-		defer wg.Done()
 		reciever.Receive()
 	}()
 
 	r := gin.Default()
 	r.LoadHTMLGlob("./pkg/templates/*")
 
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.HTML(http.StatusOK, "index.tmpl", nil)
-	})
+	r.GET("/", Home)
 
 	r.POST("/proccess", func(ctx *gin.Context) {
 		inputText, ok := ctx.GetPostForm("id")
@@ -63,20 +57,6 @@ func main() {
 		order, ok := cacher.Get(inputText)
 		if !ok {
 			ctx.HTML(404, "notfound.tmpl", nil)
-			return
-		}
-		ctx.HTML(200, "result.tmpl", order)
-	})
-
-	r.GET("/get_order", func(ctx *gin.Context) {
-		order, ok := cacher.Get(ctx.Query("order_uid"))
-		if !ok {
-			ctx.IndentedJSON(
-				404,
-				gin.H{
-					"error": "order not found",
-				},
-			)
 			return
 		}
 		ctx.HTML(200, "result.tmpl", order)
@@ -106,5 +86,4 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	wg.Wait()
 }
