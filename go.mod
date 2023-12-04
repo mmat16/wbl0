@@ -6,6 +6,7 @@ require (
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
 	github.com/nats-io/stan.go v0.10.4
+	golang.org/x/exp v0.0.0-20231127185646-65229373498e
 	gorm.io/driver/postgres v1.5.4
 	gorm.io/gorm v1.25.5
 )
