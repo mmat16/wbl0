@@ -131,8 +131,8 @@ func (c *Cache) clearItems(keys []string) {
 
 // Returns all presented items in cacher instance
 func (c *Cache) GetAllItems() []any {
- c.RLock()
- defer c.RUnlock((
+   c.RLock()
+   defer c.RUnlock((
 
 	res := make([]any, len(c.items))
 	for _, value := range c.items {
